@@ -1,0 +1,48 @@
+#Basic data of the Atheletes
+WEIGHTS_MALE = [50,55,60,66,73,81,90,100,'+100']
+WEIGHTS_FEMALE = [40,44,48,52,57,63,70,78,'+78']
+AGE_GROUP = ['Cadet', 'Junior', 'Senior']
+
+def add_athlete(name,gender,weight,age):
+    athlete = {"name" : name,
+               "gender": gender,
+               "weight": weight,
+               "age": age}
+    return athlete
+
+def choose_option(options, title):
+    print(f"\n{title}")
+
+    for i, option in enumerate(options):
+        print(f"{i + 1}. {option}")
+
+    while True:
+        choice = int(input("Choose: "))
+        if 1 <= choice<= len(options):
+            break
+        else:
+            print(f"Please insert a number from the shown below")
+    return options[choice - 1]
+
+num = int(input("How many athletes should be added now?: \n"))
+
+
+athletes = []
+for _ in range(num):
+    name = input("Introduce the athlete name: \n")
+    while True:
+        gender = input("Intrduce the athelete gender (M/F): \n")
+        gender = gender.upper().strip()
+        if gender in ["M","F"]:
+            break
+        else:
+            print("Please enter a valid gender (M/F)")
+    if gender == "M":
+        weight = choose_option(WEIGHTS_MALE, "Weight categories")
+
+    elif gender == "F":
+        weight = choose_option(WEIGHTS_FEMALE, "Weight categories")
+    else:
+        print("Please enter only M or F")
+    age = choose_option(AGE_GROUP, "Age groups")
+    athletes.append(add_athlete(name,gender,weight,age))
