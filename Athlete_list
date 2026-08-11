@@ -1,14 +1,23 @@
-#Basic data of the Atheletes
+#Connect to the database and create the Athlete Table
+import sqlite3
+
+connection = sqlite3.connect("Athlete.db")
+cursor = connection.cursor()
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS athletes(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE,
+        gender TEXT NOT NULL,
+        weight TEXT NOT NULL,
+        age TEXT NOT NULL
+    
+    )
+""")
+connection.commit()
+#Basic data of the Athletes
 WEIGHTS_MALE = [50,55,60,66,73,81,90,100,'+100']
 WEIGHTS_FEMALE = [40,44,48,52,57,63,70,78,'+78']
 AGE_GROUP = ['Cadet', 'Junior', 'Senior']
-
-def add_athlete(name,gender,weight,age):
-    athlete = {"name" : name,
-               "gender": gender,
-               "weight": weight,
-               "age": age}
-    return athlete
 
 def choose_option(options, title):
     print(f"\n{title}")
@@ -27,11 +36,10 @@ def choose_option(options, title):
 num = int(input("How many athletes should be added now?: \n"))
 
 
-athletes = []
 for _ in range(num):
     name = input("Introduce the athlete name: \n")
     while True:
-        gender = input("Intrduce the athelete gender (M/F): \n")
+        gender = input("Introduce the athlete gender (M/F): \n")
         gender = gender.upper().strip()
         if gender in ["M","F"]:
             break
@@ -45,4 +53,14 @@ for _ in range(num):
     else:
         print("Please enter only M or F")
     age = choose_option(AGE_GROUP, "Age groups")
-    athletes.append(add_athlete(name,gender,weight,age))
+
+    cursor.execute( """INSERT INTO athletes
+                    (name, gender,weight,age) 
+                    VALUES (?,?,?,?)""",
+                    (name,gender,weight,age))
+connection.commit()
+cursor.execute("SELECT * FROM ATHLETES")
+athletes = cursor.fetchall()
+print(athletes)
+
+connection.close()
